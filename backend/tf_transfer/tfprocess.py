@@ -33,8 +33,7 @@ from ..utils import printWithDate
 import natsort
 
 
-def model_path_gen(short_path):
-    models_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../models'))
+def model_path_gen(models_path, short_path):
     return os.path.join(models_path, short_path, 'ckpt/ckpt-40')
 
 class ApplySqueezeExcitation(tf.keras.layers.Layer):
@@ -130,7 +129,7 @@ class TFProcess:
         input_var = tf.keras.Input(shape=(112, 8*8))
         x_planes = tf.keras.layers.Reshape([112, 8, 8])(input_var)
 
-        base_ckpt_path = model_path_gen(self.cfg['model']['path'])
+        base_ckpt_path = model_path_gen(self.cfg['dataset']['models_dir'], self.cfg['model']['path'])
 
         self.model_maia = tf.keras.Model(inputs=input_var, outputs=self.construct_net_complete(x_planes))
         self.checkpoint_restore = tf.train.Checkpoint(model=self.model_maia)
